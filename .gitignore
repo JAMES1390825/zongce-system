@@ -15,3 +15,7 @@ frontend/.vite/
 # IDE
 .idea/
 *.iml
+
+# Local environment files
+.env
+.env.local
