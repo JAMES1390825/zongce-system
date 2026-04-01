@@ -1,0 +1,61 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: zongce-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-root123456}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE:-zongce}"
+      MYSQL_USER: "${MYSQL_USER:-zongce}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD:-zongce123!}"
+      TZ: "${TZ:-Asia/Shanghai}"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: zongce-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-zongce}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8"
+      SPRING_DATASOURCE_USERNAME: "${MYSQL_USER:-zongce}"
+      SPRING_DATASOURCE_PASSWORD: "${MYSQL_PASSWORD:-zongce123!}"
+      JWT_SECRET: "${JWT_SECRET:-ReplaceThisWithARealJwtSecretAtLeast32Chars}"
+      APP_USER_INITIAL_PASSWORD: "${APP_USER_INITIAL_PASSWORD:-123456}"
+      APP_BOOTSTRAP_ENABLED: "${APP_BOOTSTRAP_ENABLED:-true}"
+      APP_BOOTSTRAP_CREATE_SAMPLE_USERS: "${APP_BOOTSTRAP_CREATE_SAMPLE_USERS:-false}"
+      TZ: "${TZ:-Asia/Shanghai}"
+    ports:
+      - "${BACKEND_PORT:-8082}:8082"
+    volumes:
+      - backend_uploads:/app/uploads
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: zongce-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+
+volumes:
+  mysql_data:
+  backend_uploads:
