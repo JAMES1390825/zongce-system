@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全局成绩查询 - 综测系统</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>全局成绩查询</h2>
+        <p class="muted">至少输入“班级”或“学期”之一，避免全量查询</p>
+        <form method="get" th:action="@{/admin/scores}" class="inline">
+            <input name="className" th:value="${className}" placeholder="班级，如 软件221" style="width:220px; margin-bottom:0;">
+            <input name="term" th:value="${term}" placeholder="学期，如 2026-1" style="width:180px; margin-bottom:0;">
+            <button type="submit">查询</button>
+            <a th:href="@{/admin/scores}">清空</a>
+        </form>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+            <tr>
+                <th>学期</th>
+                <th>班级</th>
+                <th>排名</th>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>智育</th>
+                <th>体育</th>
+                <th>德育</th>
+                <th>技能</th>
+                <th>总分</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rows}">
+                <td th:text="${r.term}">2026-1</td>
+                <td th:text="${r.className}">软件221</td>
+                <td th:text="${r.rankNo}">1</td>
+                <td th:text="${r.studentNo}">stu001</td>
+                <td th:text="${r.studentName}">张三</td>
+                <td th:text="${r.studyScore}">85</td>
+                <td th:text="${r.peScore}">88</td>
+                <td th:text="${r.moralScore}">2</td>
+                <td th:text="${r.skillScore}">3</td>
+                <td th:text="${r.totalScore}">72.6</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(rows)}">
+                <td colspan="10" class="muted">暂无数据</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

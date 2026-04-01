@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 综测系统</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>欢迎回来，<span th:text="${user.name}">用户</span></h2>
+        <p class="muted">当前角色：<span th:text="${role}">ROLE</span></p>
+        <a th:href="@{/role-home}">进入当前角色工作台</a>
+    </div>
+
+    <div class="grid">
+        <div class="card" th:if="${role == 'ADMIN'}">
+            <h3>管理员</h3>
+            <p>维护学生/老师账号，查看全局综测结果。</p>
+            <a th:href="@{/admin/students}">进入学生管理</a>
+        </div>
+
+        <div class="card" th:if="${role == 'TEACHER_PE'}">
+            <h3>体育老师</h3>
+            <p>导入体育成绩（CSV），并支持单条录入/修改。</p>
+            <a th:href="@{/teacher/pe/edit}">进入体育录入</a>
+        </div>
+
+        <div class="card" th:if="${role == 'TEACHER_STUDY'}">
+            <h3>学习部老师</h3>
+            <p>导入智育成绩（CSV），并支持单条录入/修改。</p>
+            <a th:href="@{/teacher/study/edit}">进入智育录入</a>
+        </div>
+
+        <div class="card" th:if="${role == 'COUNSELOR'}">
+            <h3>辅导员</h3>
+            <p>按德育/技能分类审核学生申报，一键重算本班综测并查看排名。</p>
+            <a th:href="@{/counselor/review/moral}">进入审核中心</a>
+        </div>
+
+        <div class="card" th:if="${role == 'STUDENT'}">
+            <h3>学生</h3>
+            <p>分开提交德育和技能申报，查看审核状态与最终成绩。</p>
+            <a th:href="@{/student/declare/moral}">进入德育申报</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

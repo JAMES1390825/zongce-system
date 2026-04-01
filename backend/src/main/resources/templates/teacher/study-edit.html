@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智育成绩录入 - 综测系统</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2 th:text="${editing} ? '智育成绩修改' : '智育成绩录入'">智育成绩录入</h2>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+        <form th:action="@{/teacher/study/edit}" method="post">
+            <input type="hidden" name="id" th:if="${editing}" th:value="${row.id}">
+            <div class="grid">
+                <div>
+                    <label>学号</label>
+                    <input name="studentNo" th:value="${row.studentNo}" required>
+                </div>
+                <div>
+                    <label>姓名</label>
+                    <input name="studentName" th:value="${row.studentName}" required>
+                </div>
+                <div>
+                    <label>班级</label>
+                    <input name="className" th:value="${row.className}" required>
+                </div>
+                <div>
+                    <label>学期</label>
+                    <input name="term" th:value="${row.term}" placeholder="例如 2026-1" required>
+                </div>
+                <div>
+                    <label>智育分</label>
+                    <input name="score" type="number" step="0.1" min="0" th:value="${row.score}" required>
+                </div>
+            </div>
+            <button type="submit" th:text="${editing} ? '保存修改' : '提交录入'">提交录入</button>
+            <a th:href="@{/teacher/study/list}" style="margin-left:8px;">去查询页</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

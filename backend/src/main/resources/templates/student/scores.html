@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的成绩</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>我的综测成绩</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>学期</th>
+                <th>智育</th>
+                <th>体育</th>
+                <th>德育</th>
+                <th>技能</th>
+                <th>总分</th>
+                <th>班级排名</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rows}">
+                <td th:text="${r.term}"></td>
+                <td th:text="${r.studyScore}"></td>
+                <td th:text="${r.peScore}"></td>
+                <td th:text="${r.moralScore}"></td>
+                <td th:text="${r.skillScore}"></td>
+                <td th:text="${r.totalScore}"></td>
+                <td th:text="${r.rankNo}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(rows)}">
+                <td colspan="7" class="muted">暂无成绩，请等待辅导员重算后查看</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

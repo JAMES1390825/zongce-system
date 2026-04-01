@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生管理 - 综测系统</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>学生管理</h2>
+        <p class="muted">支持新增、编辑、删除与重置密码（按系统初始密码策略执行）</p>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+        <form method="get" th:action="@{/admin/students}" class="inline">
+            <input name="className" th:value="${className}" placeholder="按班级筛选，如 软件221" style="width:220px; margin-bottom:0;">
+            <button type="submit">筛选</button>
+            <a th:href="@{/admin/students}">清空</a>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>新增学生</h3>
+        <form th:action="@{/admin/students}" method="post">
+            <div class="grid">
+                <div>
+                    <label>账号</label>
+                    <input name="username" required>
+                </div>
+                <div>
+                    <label>姓名</label>
+                    <input name="name" required>
+                </div>
+                <div>
+                    <label>班级</label>
+                    <input name="className" required placeholder="如 软件221">
+                </div>
+            </div>
+            <button type="submit">创建学生</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>学生列表</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>账号</th>
+                <th>姓名</th>
+                <th>班级</th>
+                <th>状态</th>
+                <th>保存</th>
+                <th>密码</th>
+                <th>删除</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users}">
+                <td th:text="${u.id}">1</td>
+                <td>
+                    <input name="username" th:value="${u.username}" required style="width:120px; margin-bottom:0;"
+                           th:attr="form='student-update-' + ${u.id}">
+                </td>
+                <td>
+                    <input name="name" th:value="${u.name}" required style="width:120px; margin-bottom:0;"
+                           th:attr="form='student-update-' + ${u.id}">
+                </td>
+                <td>
+                    <input name="className" th:value="${u.className}" required style="width:140px; margin-bottom:0;"
+                           th:attr="form='student-update-' + ${u.id}">
+                </td>
+                <td>
+                    <select name="enabled" style="width:90px; margin-bottom:0;"
+                            th:attr="form='student-update-' + ${u.id}">
+                        <option value="true" th:selected="${u.enabled}">启用</option>
+                        <option value="false" th:selected="${!u.enabled}">禁用</option>
+                    </select>
+                </td>
+                <td>
+                    <form th:id="'student-update-' + ${u.id}"
+                          th:action="@{'/admin/students/' + ${u.id} + '/update'}"
+                          method="post">
+                        <button type="submit">保存</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{'/admin/students/' + ${u.id} + '/reset-password'}" method="post">
+                        <button type="submit" class="secondary">重置</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{'/admin/students/' + ${u.id} + '/delete'}" method="post">
+                        <button type="submit" class="danger">删除</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(users)}">
+                <td colspan="8" class="muted">暂无学生数据</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

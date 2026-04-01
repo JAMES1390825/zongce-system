@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的申报记录</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>我的申报记录</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>时间</th>
+                <th>学期</th>
+                <th>类型</th>
+                <th>项目</th>
+                <th>分值</th>
+                <th>状态</th>
+                <th>批注</th>
+                <th>附件</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rows}">
+                <td th:text="${#temporals.format(r.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${r.term}"></td>
+                <td th:text="${r.type}"></td>
+                <td th:text="${r.itemName}"></td>
+                <td th:text="${r.points}"></td>
+                <td>
+                    <span class="badge badge-pending" th:if="${r.status.name() == 'PENDING'}">待审核</span>
+                    <span class="badge badge-approved" th:if="${r.status.name() == 'APPROVED'}">已通过</span>
+                    <span class="badge badge-rejected" th:if="${r.status.name() == 'REJECTED'}">已驳回</span>
+                </td>
+                <td th:text="${r.reviewComment}"></td>
+                <td>
+                    <a th:if="${r.attachmentPath != null}" th:href="${r.attachmentPath}" target="_blank">查看</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(rows)}">
+                <td colspan="8" class="muted">暂无申报记录</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

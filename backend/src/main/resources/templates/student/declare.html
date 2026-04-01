@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>申报提交</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2 th:text="${pageTitle != null ? pageTitle : '德育 / 技能申报提交'}">德育 / 技能申报提交</h2>
+        <p class="muted">提交后进入待审核状态，辅导员可通过/驳回并附批注。</p>
+        <div class="inline" style="margin-bottom:12px;">
+            <a th:href="@{/student/declare/moral}">德育分申报</a>
+            <a th:href="@{/student/declare/skill}">技能分申报</a>
+            <a th:href="@{/student/declare}">合并入口</a>
+        </div>
+
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+        <form th:action="${submitAction != null ? submitAction : '/student/declare'}"
+              method="post"
+              enctype="multipart/form-data">
+            <div class="grid">
+                <div>
+                    <label>类型</label>
+                    <select name="type" required th:if="${fixedType == null}">
+                        <option th:each="t : ${types}" th:value="${t.name()}" th:text="${t.name()}"></option>
+                    </select>
+                    <input type="hidden" name="type" th:if="${fixedType != null}" th:value="${fixedType.name()}">
+                    <input th:if="${fixedType != null}" th:value="${fixedType.name()}" disabled>
+                </div>
+                <div>
+                    <label>学期</label>
+                    <input name="term" placeholder="例如 2026-1" required>
+                </div>
+                <div>
+                    <label>项目名称</label>
+                    <input name="itemName" placeholder="例如 校园活动志愿者 / 竞赛获奖" required>
+                </div>
+                <div>
+                    <label>分值</label>
+                    <input type="number" step="0.1" name="points" placeholder="例如 2.0" required>
+                </div>
+            </div>
+
+            <label>说明</label>
+            <textarea name="description" placeholder="可写活动时间、奖项信息等"></textarea>
+
+            <label>附件（可选）</label>
+            <input type="file" name="attachment">
+
+            <button type="submit">提交申报</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

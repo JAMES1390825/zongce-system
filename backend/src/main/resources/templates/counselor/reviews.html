@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>申报审核</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>申报审核</h2>
+        <div class="inline" style="margin-bottom:12px;">
+            <a th:href="@{/counselor/review/moral}">德育审核</a>
+            <a th:href="@{/counselor/review/skill}">技能审核</a>
+            <a th:href="@{/counselor/reviews}">全部类型</a>
+        </div>
+        <form method="get" th:action="${basePath}" class="inline">
+            <label style="margin-bottom:0;">状态</label>
+            <select name="status" style="width:180px; margin-bottom:0;">
+                <option value="PENDING" th:selected="${status == 'PENDING'}">待审核</option>
+                <option value="APPROVED" th:selected="${status == 'APPROVED'}">已通过</option>
+                <option value="REJECTED" th:selected="${status == 'REJECTED'}">已驳回</option>
+            </select>
+            <button type="submit">筛选</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>班级</th>
+                <th>学期</th>
+                <th>类型</th>
+                <th>项目</th>
+                <th>分值</th>
+                <th>说明</th>
+                <th>附件</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rows}">
+                <td th:text="${r.id}"></td>
+                <td th:text="${r.studentNo}"></td>
+                <td th:text="${r.studentName}"></td>
+                <td th:text="${r.className}"></td>
+                <td th:text="${r.term}"></td>
+                <td th:text="${r.type}"></td>
+                <td th:text="${r.itemName}"></td>
+                <td th:text="${r.points}"></td>
+                <td th:text="${r.description}"></td>
+                <td>
+                    <a th:if="${r.attachmentPath != null}" th:href="${r.attachmentPath}" target="_blank">查看</a>
+                </td>
+                <td>
+                    <div class="inline" th:if="${r.status.name() == 'PENDING'}">
+                        <form th:action="@{'/counselor/reviews/' + ${r.id} + '/approve'}" method="post">
+                            <input type="hidden" name="returnTo" th:value="${returnTo}">
+                            <button type="submit">通过</button>
+                        </form>
+                        <form th:action="@{'/counselor/reviews/' + ${r.id} + '/reject'}" method="post">
+                            <input type="hidden" name="returnTo" th:value="${returnTo}">
+                            <input name="comment" placeholder="驳回原因" style="width:120px; margin-bottom:0;">
+                            <button type="submit" class="danger">驳回</button>
+                        </form>
+                    </div>
+                    <span th:if="${r.status.name() != 'PENDING'}" th:text="${r.reviewComment}"></span>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(rows)}">
+                <td colspan="11" class="muted">暂无数据</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

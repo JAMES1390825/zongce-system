@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老师管理 - 综测系统</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>老师管理</h2>
+        <p class="muted">管理体育老师、学习部老师、辅导员账号</p>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+        <form method="get" th:action="@{/admin/teachers}" class="inline">
+            <select name="role" style="width:180px; margin-bottom:0;">
+                <option value="">全部角色</option>
+                <option th:each="r : ${roles}"
+                        th:value="${r.name()}"
+                        th:selected="${selectedRole == r.name()}"
+                        th:text="${r.name()}">ROLE</option>
+            </select>
+            <input name="department" th:value="${department}" placeholder="按部门筛选，如 体育部" style="width:220px; margin-bottom:0;">
+            <button type="submit">筛选</button>
+            <a th:href="@{/admin/teachers}">清空</a>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>新增老师</h3>
+        <form th:action="@{/admin/teachers}" method="post">
+            <div class="grid">
+                <div>
+                    <label>账号</label>
+                    <input name="username" required>
+                </div>
+                <div>
+                    <label>姓名</label>
+                    <input name="name" required>
+                </div>
+                <div>
+                    <label>角色</label>
+                    <select name="role" required>
+                        <option th:each="r : ${roles}" th:value="${r.name()}" th:text="${r.name()}">ROLE</option>
+                    </select>
+                </div>
+                <div>
+                    <label>部门</label>
+                    <input name="department" placeholder="如 体育部 / 学习部 / 辅导员">
+                </div>
+                <div>
+                    <label>负责班级（仅辅导员可填）</label>
+                    <input name="className" placeholder="如 软件221">
+                </div>
+            </div>
+            <button type="submit">创建老师</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>老师列表</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>账号</th>
+                <th>姓名</th>
+                <th>角色</th>
+                <th>部门</th>
+                <th>负责班级</th>
+                <th>状态</th>
+                <th>保存</th>
+                <th>密码</th>
+                <th>删除</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users}">
+                <td th:text="${u.id}">1</td>
+                <td>
+                    <input name="username" th:value="${u.username}" required style="width:120px; margin-bottom:0;"
+                           th:attr="form='teacher-update-' + ${u.id}">
+                </td>
+                <td>
+                    <input name="name" th:value="${u.name}" required style="width:120px; margin-bottom:0;"
+                           th:attr="form='teacher-update-' + ${u.id}">
+                </td>
+                <td>
+                    <select name="role" style="width:150px; margin-bottom:0;"
+                            th:attr="form='teacher-update-' + ${u.id}">
+                        <option th:each="r : ${roles}"
+                                th:value="${r.name()}"
+                                th:selected="${u.role.name() == r.name()}"
+                                th:text="${r.name()}">ROLE</option>
+                    </select>
+                </td>
+                <td>
+                    <input name="department" th:value="${u.department}" style="width:140px; margin-bottom:0;"
+                           th:attr="form='teacher-update-' + ${u.id}">
+                </td>
+                <td>
+                    <input name="className" th:value="${u.className}" style="width:130px; margin-bottom:0;"
+                           th:attr="form='teacher-update-' + ${u.id}">
+                </td>
+                <td>
+                    <select name="enabled" style="width:90px; margin-bottom:0;"
+                            th:attr="form='teacher-update-' + ${u.id}">
+                        <option value="true" th:selected="${u.enabled}">启用</option>
+                        <option value="false" th:selected="${!u.enabled}">禁用</option>
+                    </select>
+                </td>
+                <td>
+                    <form th:id="'teacher-update-' + ${u.id}"
+                          th:action="@{'/admin/teachers/' + ${u.id} + '/update'}"
+                          method="post">
+                        <button type="submit">保存</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{'/admin/teachers/' + ${u.id} + '/reset-password'}" method="post">
+                        <button type="submit" class="secondary">重置</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{'/admin/teachers/' + ${u.id} + '/delete'}" method="post">
+                        <button type="submit" class="danger">删除</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(users)}">
+                <td colspan="10" class="muted">暂无老师数据</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理 - 综测系统</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>用户管理</h2>
+        <p class="muted">新建账号后按系统初始密码策略执行</p>
+
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert alert-success" th:if="${param.created}">创建成功</div>
+
+        <form method="get" th:action="@{/admin/users}" class="inline">
+            <label style="margin-bottom:0;">角色筛选</label>
+            <select name="role" style="width:220px; margin-bottom:0;">
+                <option value="">全部角色</option>
+                <option th:each="r : ${roles}"
+                        th:value="${r.name()}"
+                        th:selected="${selectedRole == r.name()}"
+                        th:text="${r.name()}">ROLE</option>
+            </select>
+            <button type="submit">筛选</button>
+            <a th:href="@{/admin/users}">清空</a>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>新建用户</h3>
+        <form th:action="@{/admin/users}" method="post">
+            <div class="grid">
+                <div>
+                    <label>账号</label>
+                    <input name="username" required>
+                </div>
+                <div>
+                    <label>姓名</label>
+                    <input name="name" required>
+                </div>
+                <div>
+                    <label>角色</label>
+                    <select name="role" required>
+                        <option th:each="r : ${roles}" th:value="${r.name()}" th:text="${r.name()}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label>班级（学生/辅导员可填）</label>
+                    <input name="className">
+                </div>
+                <div>
+                    <label>部门（老师/管理员可填）</label>
+                    <input name="department">
+                </div>
+            </div>
+            <button type="submit">创建用户</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>用户列表</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>账号</th>
+                <th>姓名</th>
+                <th>角色</th>
+                <th>班级</th>
+                <th>部门</th>
+                <th>状态</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users}">
+                <td th:text="${u.id}">1</td>
+                <td th:text="${u.username}">username</td>
+                <td th:text="${u.name}">name</td>
+                <td th:text="${u.role}">role</td>
+                <td th:text="${u.className}">class</td>
+                <td th:text="${u.department}">dept</td>
+                <td th:text="${u.enabled ? '启用' : '禁用'}">启用</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

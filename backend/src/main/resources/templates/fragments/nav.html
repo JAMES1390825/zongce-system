@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="topnav" class="nav">
+    <div class="container">
+        <div class="menu">
+            <a th:href="@{/dashboard}">首页</a>
+            <a th:href="@{/profile}">个人中心</a>
+
+            <a th:if="${currentUser != null and currentUser.role.name() == 'ADMIN'}"
+               th:href="@{/admin/students}">学生管理</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'ADMIN'}"
+               th:href="@{/admin/teachers}">老师管理</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'ADMIN'}"
+               th:href="@{/admin/scores}">全局成绩</a>
+
+            <a th:if="${currentUser != null and currentUser.role.name() == 'TEACHER_PE'}"
+               th:href="@{/teacher/pe/import}">体育导入</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'TEACHER_PE'}"
+               th:href="@{/teacher/pe/edit}">体育录入</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'TEACHER_PE'}"
+               th:href="@{/teacher/pe/list}">体育查询</a>
+
+            <a th:if="${currentUser != null and currentUser.role.name() == 'TEACHER_STUDY'}"
+               th:href="@{/teacher/study/import}">智育导入</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'TEACHER_STUDY'}"
+               th:href="@{/teacher/study/edit}">智育录入</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'TEACHER_STUDY'}"
+               th:href="@{/teacher/study/list}">智育查询</a>
+
+            <a th:if="${currentUser != null and currentUser.role.name() == 'COUNSELOR'}"
+               th:href="@{/counselor/review/moral}">德育审核</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'COUNSELOR'}"
+               th:href="@{/counselor/review/skill}">技能审核</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'COUNSELOR'}"
+               th:href="@{/counselor/class-summary}">班级汇总</a>
+
+            <a th:if="${currentUser != null and currentUser.role.name() == 'STUDENT'}"
+               th:href="@{/student/declare/moral}">德育申报</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'STUDENT'}"
+               th:href="@{/student/declare/skill}">技能申报</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'STUDENT'}"
+               th:href="@{/student/declare/history}">我的申报</a>
+            <a th:if="${currentUser != null and currentUser.role.name() == 'STUDENT'}"
+               th:href="@{/student/my-score}">我的成绩</a>
+        </div>
+
+        <div class="inline" th:if="${currentUser != null}">
+            <span th:text="${currentUser.name + ' (' + currentUser.username + ')'}">用户</span>
+            <form th:action="@{/logout}" method="post" style="margin:0;">
+                <button type="submit" class="secondary">退出</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

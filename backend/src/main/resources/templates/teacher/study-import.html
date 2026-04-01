@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智育成绩导入</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>智育成绩导入</h2>
+        <p class="muted">CSV 列顺序：`studentNo,studentName,className,term,itemCode,score`</p>
+
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+        <form th:action="@{/teacher/study/import}" method="post" enctype="multipart/form-data">
+            <label>上传CSV</label>
+            <input type="file" name="file" accept=".csv" required>
+            <button type="submit">开始导入</button>
+            <a th:href="@{/api/templates/study-scores-import.csv}">下载模板</a>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>模板参考</h3>
+        <pre>studentNo,studentName,className,term,itemCode,score
+    stu001,张三,软件221,2026-1,STUDY-MATH-A1,85
+    stu001,张三,软件221,2026-1,STUDY-DIGITAL-CIRCUIT,88
+    stu002,李四,软件221,2026-1,STUDY-MATH-A1,90</pre>
+        <a th:href="@{/teacher/study/list}">去查询智育成绩</a>
+    </div>
+</div>
+</body>
+</html>

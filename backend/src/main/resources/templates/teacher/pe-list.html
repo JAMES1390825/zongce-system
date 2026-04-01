@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>体育成绩查询</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>体育成绩查询</h2>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+        <form method="get" th:action="@{/teacher/pe/list}" class="inline">
+            <input name="className" th:value="${className}" placeholder="班级，如：软件221" style="width:220px; margin-bottom:0;">
+            <input name="term" th:value="${term}" placeholder="学期，如：2026-1" style="width:180px; margin-bottom:0;">
+            <button type="submit">查询</button>
+            <a th:href="@{/teacher/pe/list}">清空</a>
+        </form>
+        <div style="margin-top:10px;">
+            <a th:href="@{/teacher/pe/edit}">新增单条成绩</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+            <tr>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>班级</th>
+                <th>学期</th>
+                <th>体育分</th>
+                <th>录入人</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rows}">
+                <td th:text="${r.studentNo}">stu001</td>
+                <td th:text="${r.studentName}">张三</td>
+                <td th:text="${r.className}">软件221</td>
+                <td th:text="${r.term}">2026-1</td>
+                <td th:text="${r.score}">88</td>
+                <td th:text="${r.createdBy}">pe001</td>
+                <td><a th:href="@{'/teacher/pe/edit?id=' + ${r.id}}">编辑</a></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(rows)}">
+                <td colspan="7" class="muted">暂无数据</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

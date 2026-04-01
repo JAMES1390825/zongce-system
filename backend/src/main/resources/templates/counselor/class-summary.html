@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班级综测汇总</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>班级综测汇总</h2>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+        <p class="muted" th:if="${scopedClass != null and scopedClass != ''}">
+            当前账号仅可查看班级：<strong th:text="${scopedClass}">软件221</strong>
+        </p>
+        <form method="get" th:action="@{/counselor/class-summary}" class="inline">
+            <input name="className" th:value="${className}" placeholder="班级，如 软件221" style="width:220px; margin-bottom:0;"
+                   th:readonly="${scopedClass != null and scopedClass != ''}">
+            <input name="term" th:value="${term}" placeholder="学期，如 2026-1" style="width:180px; margin-bottom:0;">
+            <button type="submit">查询</button>
+        </form>
+
+        <form th:action="@{/counselor/class-summary/recalc}" method="post" class="inline" style="margin-top:12px;">
+            <input name="className" th:value="${className}" placeholder="班级" style="width:220px; margin-bottom:0;"
+                   th:readonly="${scopedClass != null and scopedClass != ''}" required>
+            <input name="term" th:value="${term}" placeholder="学期" style="width:180px; margin-bottom:0;" required>
+            <button type="submit">一键重算本班综测</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+            <tr>
+                <th>排名</th>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>智育</th>
+                <th>体育</th>
+                <th>德育</th>
+                <th>技能</th>
+                <th>总分</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rows}">
+                <td th:text="${r.rankNo}"></td>
+                <td th:text="${r.studentNo}"></td>
+                <td th:text="${r.studentName}"></td>
+                <td th:text="${r.studyScore}"></td>
+                <td th:text="${r.peScore}"></td>
+                <td th:text="${r.moralScore}"></td>
+                <td th:text="${r.skillScore}"></td>
+                <td th:text="${r.totalScore}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(rows)}">
+                <td colspan="8" class="muted">暂无数据，请先导入成绩并点击重算</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

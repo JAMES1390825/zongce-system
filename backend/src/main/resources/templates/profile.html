@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 综测系统</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="container">
+    <div class="card">
+        <h2>个人信息</h2>
+        <p>姓名：<span th:text="${user.name}">姓名</span></p>
+        <p>账号：<span th:text="${user.username}">username</span></p>
+        <p>角色：<span th:text="${user.role}">role</span></p>
+        <p th:if="${user.className != null}">班级：<span th:text="${user.className}">班级</span></p>
+        <p th:if="${user.department != null}">部门：<span th:text="${user.department}">部门</span></p>
+    </div>
+
+    <div class="card">
+        <h3>修改密码</h3>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+        <form th:action="@{/profile/password}" method="post">
+            <label>旧密码</label>
+            <input type="password" name="oldPassword" required>
+
+            <label>新密码</label>
+            <input type="password" name="newPassword" minlength="6" required>
+
+            <button type="submit">更新密码</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
